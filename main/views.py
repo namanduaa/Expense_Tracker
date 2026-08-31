@@ -1,7 +1,9 @@
-from django.http import HttpResponse
 from django.shortcuts import render
 
 
 def index(request):
-    # Simple view demonstrating Django response
-    return HttpResponse('Hello, Django!')
+    context = {
+        'title': 'My Django App',
+        'message': 'Your project is ready for GitHub.',
+    }
+    return render(request, 'index.html', context)

@@ -1,12 +1,14 @@
 # Minimal Django scaffold
 
-Quick start:
+This project is a simple Django app with a landing page and a GitHub-ready setup.
 
-1. Create a virtualenv and activate it:
+## Quick start
+
+1. Create a virtual environment and activate it:
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # on Windows: .venv\Scripts\activate
+.venv\Scripts\activate
 ```
 
 2. Install dependencies:
@@ -15,11 +17,22 @@ source .venv/bin/activate  # on Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-3. Run migrations and start the dev server:
+3. Run migrations and start the server:
 
 ```bash
 python manage.py migrate
 python manage.py runserver
 ```
 
-Open http://127.0.0.1:8000/ to see the app.
+Open http://127.0.0.1:8000/ to view the app.
+
+## GitHub upload
+
+```bash
+git init
+git add .
+git commit -m "Initial project setup"
+git branch -M main
+git remote add origin <your-github-repository-url>
+git push -u origin main
+```
