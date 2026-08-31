@@ -2,6 +2,8 @@
 
 This project is a simple Django app with a landing page and a GitHub-ready setup.
 
+This repository has been updated with a fresh project change.
+
 ## Quick start
 
 1. Create a virtual environment and activate it:
