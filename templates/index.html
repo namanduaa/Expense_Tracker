@@ -1,52 +1,1551 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ title }}</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background: #f4f7fb;
-        margin: 0;
-        display: grid;
-        place-items: center;
-        min-height: 100vh;
-        color: #1f2937;
-      }
-      .card {
-        background: white;
-        border-radius: 16px;
-        padding: 40px 48px;
-        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-        text-align: center;
-        max-width: 520px;
-      }
-      h1 {
-        margin-top: 0;
-        font-size: 2.2rem;
-      }
-      p {
-        font-size: 1.1rem;
-        line-height: 1.6;
-      }
-      .badge {
-        display: inline-block;
-        background: #dbeafe;
-        color: #1d4ed8;
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-size: 0.9rem;
-        margin-bottom: 16px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="card">
-      <div class="badge">Django Project</div>
-      <h1>{{ title }}</h1>
-      <p>{{ message }}</p>
-      <p>This is a new small update to keep the project active and ready for the next commit.</p>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Personal Expense Tracker API | High-Performance REST API</title>
+  <meta name="description" content="Production-ready Personal Expense Tracker REST API built with Django, DRF, PostgreSQL, JWT, and Pandas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #090D16;
+      --card-bg: rgba(17, 24, 39, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-primary: #6366F1;
+      --accent-glow: rgba(99, 102, 241, 0.35);
+      --accent-success: #10B981;
+      --accent-warning: #F59E0B;
+      --accent-danger: #EF4444;
+      --accent-cyan: #06B6D4;
+      --text-main: #F3F4F6;
+      --text-muted: #9CA3AF;
+      --code-bg: #030712;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12), transparent 45%),
+                  radial-gradient(circle at 85% 75%, rgba(16, 185, 129, 0.08), transparent 45%),
+                  var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    /* Header Nav */
+    header {
+      backdrop-filter: blur(16px);
+      background: rgba(9, 13, 22, 0.8);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #6366F1, #8B5CF6);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 20px var(--accent-glow);
+      font-size: 20px;
+    }
+
+    .brand-text h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(to right, #FFFFFF, #CBD5E1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-text span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: block;
+      margin-top: -2px;
+    }
+
+    .nav-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: #E2E8F0;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .pill.jwt { border-color: rgba(99, 102, 241, 0.4); color: #818CF8; }
+    .pill.postgres { border-color: rgba(6, 182, 212, 0.4); color: #22D3EE; }
+    .pill.pandas { border-color: rgba(245, 158, 11, 0.4); color: #FBBF24; }
+    .pill.orm { border-color: rgba(16, 185, 129, 0.4); color: #34D399; }
+
+    /* Main Container */
+    .container {
+      max-width: 1240px;
+      margin: 32px auto 0;
+      padding: 0 24px;
+    }
+
+    /* Hero Banner */
+    .hero-card {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 32px 36px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-card h2 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .hero-card p {
+      color: #94A3B8;
+      font-size: 1.02rem;
+      max-width: 860px;
+    }
+
+    /* Resume Specification Checklist */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .spec-item {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      transition: all 0.2s ease;
+    }
+
+    .spec-item:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .spec-badge {
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .spec-content h4 {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #F8FAFC;
+      margin-bottom: 4px;
+    }
+
+    .spec-content p {
+      font-size: 0.8rem;
+      color: #94A3B8;
+      line-height: 1.4;
+    }
+
+    /* Tabs & Content */
+    .tab-nav {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 24px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      color: #FFFFFF;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Auth Console Bar */
+    .auth-banner {
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 14px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .auth-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent-success);
+      box-shadow: 0 0 10px var(--accent-success);
+    }
+
+    .btn {
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366F1, #4F46E5);
+      color: white;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--card-border);
+      color: #E2E8F0;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10B981, #059669);
+      color: white;
+    }
+
+    /* Grid for Metrics */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric-box {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .metric-val {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #F8FAFC;
+    }
+
+    .metric-hint {
+      font-size: 0.75rem;
+      color: #64748B;
+      margin-top: 4px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    th {
+      background: rgba(15, 23, 42, 0.95);
+      padding: 12px 16px;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: #E2E8F0;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Progress bar */
+    .progress-bar-bg {
+      background: rgba(255, 255, 255, 0.08);
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 6px;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    /* Code & Terminal */
+    pre, code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .terminal-box {
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 0.85rem;
+      color: #38BDF8;
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+
+    .badge-tag {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .badge-income { background: rgba(16, 185, 129, 0.15); color: #34D399; }
+    .badge-expense { background: rgba(239, 68, 68, 0.15); color: #F87171; }
+    .badge-exceeded { background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .badge-ok { background: rgba(16, 185, 129, 0.2); color: #10B981; }
+
+    /* Interactive Inputs */
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .input-group label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .input-group input, .input-group select {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: white;
+      font-family: inherit;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-group input:focus, .input-group select:focus {
+      border-color: var(--accent-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">💳</div>
+      <div class="brand-text">
+        <h1>Personal Expense Tracker API</h1>
+        <span>Python • Django • DRF • PostgreSQL • JWT • Pandas</span>
+      </div>
     </div>
-  </body>
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+      <div class="nav-tags">
+        <span class="pill jwt">🛡️ JWT Auth</span>
+        <span class="pill orm">⚡ ORM aggregate() & annotate()</span>
+        <span class="pill pandas">🐼 Pandas CSV Export</span>
+        <span class="pill postgres">🐘 PostgreSQL</span>
+      </div>
+      <a href="/swagger/" target="_blank" class="btn btn-primary" style="text-decoration: none; font-size: 0.82rem; padding: 6px 14px; background: linear-gradient(135deg, #10B981, #059669); border: none; box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);">
+        ⚡ Swagger UI ↗
+      </a>
+      <a href="/redoc/" target="_blank" class="btn btn-secondary" style="text-decoration: none; font-size: 0.82rem; padding: 6px 14px;">
+        📘 Redoc ↗
+      </a>
+    </div>
+  </header>
+
+  <!-- Container -->
+  <div class="container">
+
+    <!-- Hero Card -->
+    <div class="hero-card">
+      <h2>Production REST API Architecture</h2>
+      <p>
+        Full-featured API tracking personal income and expenses with customizable categories, automated recurring entries, and strict per-category monthly budget limits. Designed for multi-tenant data isolation via JSON Web Tokens, ORM-level analytical aggregations, and high-performance Pandas CSV reporting.
+      </p>
+
+      <div class="specs-grid">
+        <div class="spec-item">
+          <div class="spec-badge">🔒</div>
+          <div class="spec-content">
+            <h4>JWT User Isolation</h4>
+            <p>Every endpoint is scoped to <code>request.user</code>. Users can never view or modify foreign transactions, budgets, or categories.</p>
+          </div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-badge">📊</div>
+          <div class="spec-content">
+            <h4>ORM aggregate() & annotate()</h4>
+            <p>Computes instant monthly totals, net savings, savings rate, and category spending distributions directly in the database engine.</p>
+          </div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-badge">🐼</div>
+          <div class="spec-content">
+            <h4>Pandas CSV Export</h4>
+            <p>Transforms filtered transactions and breakdown reports into clean, standard RFC 4180 CSV attachments via Pandas DataFrame streams.</p>
+          </div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-badge">🔄</div>
+          <div class="spec-content">
+            <h4>Automated Recurring Plans</h4>
+            <p>Daily, weekly, monthly, and yearly recurring entries processed automatically via API action or Django management command.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Auth Console -->
+    <div class="auth-banner" id="authBanner">
+      <div class="auth-status">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="authStatusText">Demo Mode: Authenticated as <strong>demo_user</strong></span>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-secondary" onclick="generateNewTestUser()">⚡ Generate Fresh User</button>
+        <button class="btn btn-secondary" onclick="copyJwtToken()">📋 Copy Access Token</button>
+        <a href="/swagger/" target="_blank" class="btn btn-secondary" style="text-decoration: none;">🚀 Test via Swagger UI ↗</a>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('analytics')">📈 Analytics & ORM Metrics</button>
+      <button class="tab-btn" onclick="switchTab('transactions')">💸 Transactions & CSV</button>
+      <button class="tab-btn" onclick="switchTab('budgets')">🎯 Budget Limits & Alerts</button>
+      <button class="tab-btn" onclick="switchTab('recurring')">🔁 Recurring Entries</button>
+      <button class="tab-btn" onclick="switchTab('endpoints')">📖 API Endpoints Reference</button>
+      <a href="/swagger/" target="_blank" class="tab-btn" style="text-decoration: none; color: #34D399;">⚡ Interactive Swagger Docs ↗</a>
+    </div>
+
+    <!-- TAB 1: Analytics & ORM -->
+    <div class="tab-pane active" id="tab-analytics">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>⚡ Monthly Spending Summary</span>
+            <span class="pill orm">Django ORM aggregate()</span>
+          </div>
+          <div>
+            <span style="font-size: 0.85rem; color: var(--text-muted);" id="summaryDateLabel">October 2026</span>
+          </div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-box">
+            <div class="metric-label">Total Income</div>
+            <div class="metric-val" style="color: #34D399;" id="metricIncome">$0.00</div>
+            <div class="metric-hint">aggregate(Sum('amount'))</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Total Expenses</div>
+            <div class="metric-val" style="color: #F87171;" id="metricExpense">$0.00</div>
+            <div class="metric-hint">aggregate(Sum('amount'))</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Net Savings</div>
+            <div class="metric-val" style="color: #60A5FA;" id="metricSavings">$0.00</div>
+            <div class="metric-hint">Income - Expenses</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Savings Rate</div>
+            <div class="metric-val" style="color: #FBBF24;" id="metricSavingsRate">0.0%</div>
+            <div class="metric-hint">(Savings / Income) * 100</div>
+          </div>
+        </div>
+
+        <div class="card-header" style="margin-top: 16px;">
+          <div class="card-title">
+            <span>📊 Category-Wise Breakdown</span>
+            <span class="pill orm">Django ORM annotate(Sum('amount'))</span>
+          </div>
+          <button class="btn btn-secondary" onclick="exportBreakdownCSV()">🐼 Export Breakdown (Pandas CSV)</button>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Total Spent</th>
+                <th>% of Total</th>
+                <th>Tx Count</th>
+                <th>Avg Amount</th>
+                <th>Budget Limit</th>
+                <th>Budget Status</th>
+              </tr>
+            </thead>
+            <tbody id="breakdownTableBody">
+              <tr>
+                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                  Loading ORM aggregations...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Transactions & CSV Export -->
+    <div class="tab-pane" id="tab-transactions">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>💸 Personal Transactions</span>
+            <span class="pill pandas">Pandas Export Enabled</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-primary" onclick="toggleAddTransactionModal()">+ Add Transaction</button>
+            <button class="btn btn-success" onclick="downloadTransactionsCSV()">🐼 Download CSV (Pandas)</button>
+          </div>
+        </div>
+
+        <!-- Add Transaction Inline Form -->
+        <div id="addTxForm" style="display: none; background: rgba(15, 23, 42, 0.6); padding: 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--card-border);">
+          <h4 style="font-size: 0.95rem; margin-bottom: 12px;">Record New Income or Expense</h4>
+          <div class="form-row">
+            <div class="input-group">
+              <label>Type</label>
+              <select id="txType">
+                <option value="EXPENSE">Expense</option>
+                <option value="INCOME">Income</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Amount ($)</label>
+              <input type="number" id="txAmount" placeholder="0.00" step="0.01">
+            </div>
+            <div class="input-group">
+              <label>Category</label>
+              <select id="txCategory"></select>
+            </div>
+            <div class="input-group">
+              <label>Date</label>
+              <input type="date" id="txDate">
+            </div>
+            <div class="input-group">
+              <label>Description</label>
+              <input type="text" id="txDesc" placeholder="e.g. Grocery store, Client invoice">
+            </div>
+          </div>
+          <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button class="btn btn-secondary" onclick="toggleAddTransactionModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="submitTransaction()">Save Transaction</button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Recurring</th>
+              </tr>
+            </thead>
+            <tbody id="transactionsTableBody">
+              <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                  Loading transactions...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Budgets -->
+    <div class="tab-pane" id="tab-budgets">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>🎯 Monthly Budget Limits per Category</span>
+          </div>
+          <button class="btn btn-primary" onclick="toggleAddBudgetModal()">+ Set Category Budget</button>
+        </div>
+
+        <div id="addBudgetForm" style="display: none; background: rgba(15, 23, 42, 0.6); padding: 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--card-border);">
+          <h4 style="font-size: 0.95rem; margin-bottom: 12px;">Define Category Monthly Limit</h4>
+          <div class="form-row">
+            <div class="input-group">
+              <label>Category</label>
+              <select id="budgetCategory"></select>
+            </div>
+            <div class="input-group">
+              <label>Limit ($)</label>
+              <input type="number" id="budgetLimit" placeholder="e.g. 500.00" step="1.00">
+            </div>
+            <div class="input-group">
+              <label>Month (1-12)</label>
+              <input type="number" id="budgetMonth" min="1" max="12" value="10">
+            </div>
+            <div class="input-group">
+              <label>Year</label>
+              <input type="number" id="budgetYear" value="2026">
+            </div>
+          </div>
+          <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button class="btn btn-secondary" onclick="toggleAddBudgetModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="submitBudget()">Save Budget Limit</button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Month / Year</th>
+                <th>Limit ($)</th>
+                <th>Spent ($)</th>
+                <th>Remaining ($)</th>
+                <th>% Used</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="budgetsTableBody">
+              <tr>
+                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                  Loading category budgets...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Recurring Entries -->
+    <div class="tab-pane" id="tab-recurring">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>🔁 Recurring Entries (Automated Income & Expenses)</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary" onclick="processAllRecurring()">⚡ Run Processor Now</button>
+            <button class="btn btn-primary" onclick="toggleAddRecurringModal()">+ New Recurring Plan</button>
+          </div>
+        </div>
+
+        <div id="addRecurringForm" style="display: none; background: rgba(15, 23, 42, 0.6); padding: 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--card-border);">
+          <h4 style="font-size: 0.95rem; margin-bottom: 12px;">Create Recurring Entry</h4>
+          <div class="form-row">
+            <div class="input-group">
+              <label>Type</label>
+              <select id="recType">
+                <option value="EXPENSE">Expense</option>
+                <option value="INCOME">Income</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Category</label>
+              <select id="recCategory"></select>
+            </div>
+            <div class="input-group">
+              <label>Amount ($)</label>
+              <input type="number" id="recAmount" placeholder="0.00" step="0.01">
+            </div>
+            <div class="input-group">
+              <label>Frequency</label>
+              <select id="recFreq">
+                <option value="MONTHLY">Monthly</option>
+                <option value="WEEKLY">Weekly</option>
+                <option value="DAILY">Daily</option>
+                <option value="YEARLY">Yearly</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Start Date</label>
+              <input type="date" id="recStartDate">
+            </div>
+            <div class="input-group">
+              <label>Description</label>
+              <input type="text" id="recDesc" placeholder="e.g. Netflix Subscription, Monthly Salary">
+            </div>
+          </div>
+          <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button class="btn btn-secondary" onclick="toggleAddRecurringModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="submitRecurring()">Save Recurring Plan</button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Frequency</th>
+                <th>Next Due Date</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="recurringTableBody">
+              <tr>
+                <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                  Loading recurring entries...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: Endpoints Reference -->
+    <div class="tab-pane" id="tab-endpoints">
+      <div class="card">
+        <div class="card-title" style="margin-bottom: 16px;">
+          <span>📖 REST API Endpoints Quick Reference</span>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Endpoint</th>
+                <th>Auth</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="pill jwt">POST</span></td>
+                <td><code>/api/auth/register/</code></td>
+                <td>None</td>
+                <td>Register user with username, email, password, and generate default categories</td>
+              </tr>
+              <tr>
+                <td><span class="pill jwt">POST</span></td>
+                <td><code>/api/auth/login/</code></td>
+                <td>None</td>
+                <td>Obtain JWT Access & Refresh token pair</td>
+              </tr>
+              <tr>
+                <td><span class="pill jwt">POST</span></td>
+                <td><code>/api/auth/refresh/</code></td>
+                <td>None</td>
+                <td>Refresh JWT access token</td>
+              </tr>
+              <tr>
+                <td><span class="pill orm">GET, POST</span></td>
+                <td><code>/api/transactions/</code></td>
+                <td>Bearer JWT</td>
+                <td>List user transactions (supports filters: date range, category, amount, recurring)</td>
+              </tr>
+              <tr>
+                <td><span class="pill pandas">GET</span></td>
+                <td><code>/api/transactions/export-csv/</code></td>
+                <td>Bearer JWT</td>
+                <td>Export filtered transactions as downloadable CSV using <strong>Pandas</strong></td>
+              </tr>
+              <tr>
+                <td><span class="pill orm">GET, POST</span></td>
+                <td><code>/api/categories/</code></td>
+                <td>Bearer JWT</td>
+                <td>User-scoped income and expense categories</td>
+              </tr>
+              <tr>
+                <td><span class="pill orm">GET, POST</span></td>
+                <td><code>/api/budgets/</code></td>
+                <td>Bearer JWT</td>
+                <td>Category budget limits per month/year with spent & exceeded calculations</td>
+              </tr>
+              <tr>
+                <td><span class="pill orm">GET</span></td>
+                <td><code>/api/budgets/status/?year=2026&month=10</code></td>
+                <td>Bearer JWT</td>
+                <td>Overview of all active budgets and spending alerts for specified month</td>
+              </tr>
+              <tr>
+                <td><span class="pill orm">GET, POST</span></td>
+                <td><code>/api/recurring/</code></td>
+                <td>Bearer JWT</td>
+                <td>Recurring income & expense plans (daily, weekly, monthly, yearly)</td>
+              </tr>
+              <tr>
+                <td><span class="pill orm">POST</span></td>
+                <td><code>/api/recurring/process-all/</code></td>
+                <td>Bearer JWT</td>
+                <td>Process all due recurring occurrences into real transactions</td>
+              </tr>
+              <tr>
+                <td><span class="pill orm">GET</span></td>
+                <td><code>/api/analytics/monthly-summary/?year=2026&month=10</code></td>
+                <td>Bearer JWT</td>
+                <td>Monthly spending, income & savings summary via <strong>Django ORM aggregate()</strong></td>
+              </tr>
+              <tr>
+                <td><span class="pill orm">GET</span></td>
+                <td><code>/api/analytics/category-breakdown/?year=2026&month=10</code></td>
+                <td>Bearer JWT</td>
+                <td>Category-wise breakdown via <strong>Django ORM annotate()</strong></td>
+              </tr>
+              <tr>
+                <td><span class="pill pandas">GET</span></td>
+                <td><code>/api/analytics/category-breakdown/export-csv/</code></td>
+                <td>Bearer JWT</td>
+                <td>Category spending breakdown CSV export powered by <strong>Pandas</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <h4 style="font-size: 0.95rem; margin-bottom: 8px;">Sample cURL Request with JWT</h4>
+          <div class="terminal-box" id="curlExample">
+curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&month=10" \
+     -H "Authorization: Bearer &lt;YOUR_ACCESS_TOKEN&gt;" \
+     -H "Accept: application/json"
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let currentToken = null;
+    let currentUser = null;
+    let categoriesList = [];
+
+    // Set today's date in form fields
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('txDate').value = today;
+    document.getElementById('recStartDate').value = today;
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+      
+      const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+      if (activeBtn) activeBtn.classList.add('active');
+      
+      const pane = document.getElementById(`tab-${tabId}`);
+      if (pane) pane.classList.add('active');
+    }
+
+    async function apiRequest(url, options = {}) {
+      if (!options.headers) options.headers = {};
+      if (currentToken) {
+        options.headers['Authorization'] = `Bearer ${currentToken}`;
+      }
+      if (options.body && typeof options.body === 'object' && !(options.body instanceof FormData)) {
+        options.headers['Content-Type'] = 'application/json';
+        options.body = JSON.stringify(options.body);
+      }
+      return fetch(url, options);
+    }
+
+    async function generateNewTestUser() {
+      const rand = Math.floor(Math.random() * 9000) + 1000;
+      const username = `demo_user_${rand}`;
+      const password = `Pass${rand}!12345`;
+
+      try {
+        const res = await fetch('/api/auth/register/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: username,
+            email: `${username}@example.com`,
+            password: password,
+            password_confirm: password,
+            first_name: 'Demo',
+            last_name: 'User'
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          currentToken = data.tokens.access;
+          currentUser = data.user;
+          localStorage.setItem('expense_jwt_token', currentToken);
+          localStorage.setItem('expense_user', JSON.stringify(currentUser));
+          updateAuthUI();
+          await seedInitialDemoData();
+          await loadAllData();
+        } else {
+          alert('Registration failed: ' + JSON.stringify(data));
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function seedInitialDemoData() {
+      // Fetch user's default categories
+      await loadCategories();
+      const salaryCat = categoriesList.find(c => c.name === 'Salary');
+      const foodCat = categoriesList.find(c => c.name === 'Food & Dining');
+      const rentCat = categoriesList.find(c => c.name === 'Housing & Rent');
+      const utilCat = categoriesList.find(c => c.name === 'Utilities');
+
+      // Seed 1 Income & 3 Expenses
+      if (salaryCat) {
+        await apiRequest('/api/transactions/', {
+          method: 'POST',
+          body: {
+            transaction_type: 'INCOME',
+            amount: '6500.00',
+            category: salaryCat.id,
+            date: today,
+            description: 'Monthly Tech Salary'
+          }
+        });
+      }
+      if (rentCat) {
+        await apiRequest('/api/transactions/', {
+          method: 'POST',
+          body: {
+            transaction_type: 'EXPENSE',
+            amount: '1850.00',
+            category: rentCat.id,
+            date: today,
+            description: 'Downtown Apartment Rent'
+          }
+        });
+      }
+      if (foodCat) {
+        await apiRequest('/api/transactions/', {
+          method: 'POST',
+          body: {
+            transaction_type: 'EXPENSE',
+            amount: '380.50',
+            category: foodCat.id,
+            date: today,
+            description: 'Whole Foods Market'
+          }
+        });
+        // Create budget for Food
+        await apiRequest('/api/budgets/', {
+          method: 'POST',
+          body: {
+            category: foodCat.id,
+            amount_limit: '600.00',
+            month: new Date().getMonth() + 1,
+            year: new Date().getFullYear()
+          }
+        });
+      }
+      if (utilCat) {
+        await apiRequest('/api/transactions/', {
+          method: 'POST',
+          body: {
+            transaction_type: 'EXPENSE',
+            amount: '120.00',
+            category: utilCat.id,
+            date: today,
+            description: 'High-speed Fiber Internet'
+          }
+        });
+      }
+
+      // Add a recurring plan
+      if (salaryCat) {
+        await apiRequest('/api/recurring/', {
+          method: 'POST',
+          body: {
+            category: salaryCat.id,
+            transaction_type: 'INCOME',
+            amount: '6500.00',
+            description: 'Automated Bi-weekly Paycheck',
+            frequency: 'MONTHLY',
+            start_date: today,
+            next_date: today,
+            is_active: true
+          }
+        });
+      }
+    }
+
+    function updateAuthUI() {
+      const authStatusText = document.getElementById('authStatusText');
+      if (currentUser && currentToken) {
+        authStatusText.innerHTML = `Active Session: <strong>${currentUser.username}</strong> | JWT Secured`;
+      }
+    }
+
+    function copyJwtToken() {
+      if (!currentToken) return alert('No active token.');
+      navigator.clipboard.writeText(currentToken);
+      alert('JWT Access Token copied to clipboard!');
+    }
+
+    async function loadCategories() {
+      try {
+        const res = await apiRequest('/api/categories/');
+        if (res.ok) {
+          const data = await res.json();
+          categoriesList = data.results || data;
+          populateCategoryDropdowns();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function populateCategoryDropdowns() {
+      const selects = [
+        document.getElementById('txCategory'),
+        document.getElementById('budgetCategory'),
+        document.getElementById('recCategory')
+      ];
+      selects.forEach(select => {
+        if (!select) return;
+        select.innerHTML = '';
+        categoriesList.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.id;
+          opt.textContent = `${c.name} (${c.category_type})`;
+          select.appendChild(opt);
+        });
+      });
+    }
+
+    async function loadAnalytics() {
+      try {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
+
+        const resSum = await apiRequest(`/api/analytics/monthly-summary/?year=${year}&month=${month}`);
+        if (resSum.ok) {
+          const sum = await resSum.json();
+          document.getElementById('metricIncome').textContent = `$${parseFloat(sum.total_income).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+          document.getElementById('metricExpense').textContent = `$${parseFloat(sum.total_expense).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+          document.getElementById('metricSavings').textContent = `$${parseFloat(sum.net_savings).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+          document.getElementById('metricSavingsRate').textContent = `${sum.savings_rate}%`;
+        }
+
+        const resBreak = await apiRequest(`/api/analytics/category-breakdown/?year=${year}&month=${month}`);
+        if (resBreak.ok) {
+          const breakData = await resBreak.json();
+          renderBreakdownTable(breakData.breakdown || []);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderBreakdownTable(items) {
+      const tbody = document.getElementById('breakdownTableBody');
+      if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">No expense transactions recorded this month yet.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = items.map(item => `
+        <tr>
+          <td>
+            <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: ${item.category_color}; margin-right: 8px;"></span>
+            <strong>${item.category_name}</strong>
+          </td>
+          <td style="font-weight: 600;">$${parseFloat(item.total_spent).toFixed(2)}</td>
+          <td>
+            <div>${item.percentage_of_total}%</div>
+            <div class="progress-bar-bg" style="width: 100px;">
+              <div class="progress-bar-fill" style="width: ${Math.min(item.percentage_of_total, 100)}%; background: ${item.category_color};"></div>
+            </div>
+          </td>
+          <td>${item.transaction_count}</td>
+          <td>$${parseFloat(item.avg_transaction).toFixed(2)}</td>
+          <td>${item.budget_limit ? `$${parseFloat(item.budget_limit).toFixed(2)}` : '<span style="color: #64748B;">No limit</span>'}</td>
+          <td>
+            ${item.budget_limit 
+              ? (item.is_budget_exceeded 
+                  ? `<span class="badge-tag badge-exceeded">EXCEEDED (${item.budget_percentage_used}%)</span>` 
+                  : `<span class="badge-tag badge-ok">${item.budget_percentage_used}% used</span>`) 
+              : '<span class="badge-tag" style="background: rgba(255,255,255,0.06);">Untracked</span>'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadTransactions() {
+      try {
+        const res = await apiRequest('/api/transactions/');
+        if (res.ok) {
+          const data = await res.json();
+          renderTransactionsTable(data.results || data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderTransactionsTable(transactions) {
+      const tbody = document.getElementById('transactionsTableBody');
+      if (transactions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 20px;">No transactions recorded.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = transactions.map(t => `
+        <tr>
+          <td>${t.date}</td>
+          <td><span class="badge-tag ${t.transaction_type === 'INCOME' ? 'badge-income' : 'badge-expense'}">${t.transaction_type}</span></td>
+          <td>
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: ${t.category_color || '#94A3B8'}; margin-right: 6px;"></span>
+            ${t.category_name || 'Uncategorized'}
+          </td>
+          <td style="font-weight: 600; color: ${t.transaction_type === 'INCOME' ? '#34D399' : '#F87171'};">
+            ${t.transaction_type === 'INCOME' ? '+' : '-'}$${parseFloat(t.amount).toFixed(2)}
+          </td>
+          <td>${t.description || '-'}</td>
+          <td>${t.recurring_entry ? '<span class="pill jwt">🔁 Plan #' + t.recurring_entry + '</span>' : '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadBudgets() {
+      try {
+        const res = await apiRequest('/api/budgets/status/');
+        if (res.ok) {
+          const data = await res.json();
+          renderBudgetsTable(data.budgets || []);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderBudgetsTable(budgets) {
+      const tbody = document.getElementById('budgetsTableBody');
+      if (budgets.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">No budget limits configured for this month.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = budgets.map(b => `
+        <tr>
+          <td>
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: ${b.category_color || '#94A3B8'}; margin-right: 6px;"></span>
+            <strong>${b.category_name}</strong>
+          </td>
+          <td>${b.month}/${b.year}</td>
+          <td style="font-weight: 600;">$${parseFloat(b.amount_limit).toFixed(2)}</td>
+          <td style="color: #F87171;">$${parseFloat(b.spent_amount).toFixed(2)}</td>
+          <td style="color: ${parseFloat(b.remaining_amount) < 0 ? '#EF4444' : '#34D399'};">
+            $${parseFloat(b.remaining_amount).toFixed(2)}
+          </td>
+          <td>
+            <div>${b.percentage_used}%</div>
+            <div class="progress-bar-bg" style="width: 100px;">
+              <div class="progress-bar-fill" style="width: ${Math.min(b.percentage_used, 100)}%; background: ${b.is_exceeded ? '#EF4444' : '#10B981'};"></div>
+            </div>
+          </td>
+          <td>
+            ${b.is_exceeded ? '<span class="badge-tag badge-exceeded">LIMIT EXCEEDED</span>' : '<span class="badge-tag badge-ok">ON TRACK</span>'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadRecurring() {
+      try {
+        const res = await apiRequest('/api/recurring/');
+        if (res.ok) {
+          const data = await res.json();
+          renderRecurringTable(data.results || data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderRecurringTable(items) {
+      const tbody = document.getElementById('recurringTableBody');
+      if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 20px;">No recurring entries scheduled.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = items.map(r => `
+        <tr>
+          <td><strong>${r.description}</strong></td>
+          <td><span class="badge-tag ${r.transaction_type === 'INCOME' ? 'badge-income' : 'badge-expense'}">${r.transaction_type}</span></td>
+          <td>${r.category_name || '-'}</td>
+          <td style="font-weight: 600;">$${parseFloat(r.amount).toFixed(2)}</td>
+          <td><span class="pill">${r.frequency}</span></td>
+          <td>${r.next_date}</td>
+          <td>${r.is_active ? '<span class="badge-tag badge-ok">Active</span>' : '<span class="badge-tag">Paused</span>'}</td>
+          <td>
+            <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="processSingleRecurring(${r.id})">Execute</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function toggleAddTransactionModal() {
+      const el = document.getElementById('addTxForm');
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function toggleAddBudgetModal() {
+      const el = document.getElementById('addBudgetForm');
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function toggleAddRecurringModal() {
+      const el = document.getElementById('addRecurringForm');
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function submitTransaction() {
+      const amount = document.getElementById('txAmount').value;
+      const type = document.getElementById('txType').value;
+      const cat = document.getElementById('txCategory').value;
+      const dt = document.getElementById('txDate').value;
+      const desc = document.getElementById('txDesc').value;
+
+      if (!amount || parseFloat(amount) <= 0) return alert('Enter a valid amount.');
+
+      const res = await apiRequest('/api/transactions/', {
+        method: 'POST',
+        body: {
+          transaction_type: type,
+          amount: amount,
+          category: cat,
+          date: dt,
+          description: desc
+        }
+      });
+      if (res.ok) {
+        toggleAddTransactionModal();
+        document.getElementById('txAmount').value = '';
+        document.getElementById('txDesc').value = '';
+        await loadAllData();
+      } else {
+        const err = await res.json();
+        alert('Error: ' + JSON.stringify(err));
+      }
+    }
+
+    async function submitBudget() {
+      const cat = document.getElementById('budgetCategory').value;
+      const limit = document.getElementById('budgetLimit').value;
+      const month = document.getElementById('budgetMonth').value;
+      const year = document.getElementById('budgetYear').value;
+
+      if (!limit || parseFloat(limit) <= 0) return alert('Enter a valid budget limit.');
+
+      const res = await apiRequest('/api/budgets/', {
+        method: 'POST',
+        body: {
+          category: cat,
+          amount_limit: limit,
+          month: month,
+          year: year
+        }
+      });
+      if (res.ok) {
+        toggleAddBudgetModal();
+        document.getElementById('budgetLimit').value = '';
+        await loadAllData();
+      } else {
+        const err = await res.json();
+        alert('Error: ' + JSON.stringify(err));
+      }
+    }
+
+    async function submitRecurring() {
+      const type = document.getElementById('recType').value;
+      const cat = document.getElementById('recCategory').value;
+      const amount = document.getElementById('recAmount').value;
+      const freq = document.getElementById('recFreq').value;
+      const sdate = document.getElementById('recStartDate').value;
+      const desc = document.getElementById('recDesc').value;
+
+      if (!amount || parseFloat(amount) <= 0) return alert('Enter a valid amount.');
+
+      const res = await apiRequest('/api/recurring/', {
+        method: 'POST',
+        body: {
+          transaction_type: type,
+          category: cat,
+          amount: amount,
+          frequency: freq,
+          start_date: sdate,
+          next_date: sdate,
+          description: desc
+        }
+      });
+      if (res.ok) {
+        toggleAddRecurringModal();
+        document.getElementById('recAmount').value = '';
+        document.getElementById('recDesc').value = '';
+        await loadAllData();
+      } else {
+        const err = await res.json();
+        alert('Error: ' + JSON.stringify(err));
+      }
+    }
+
+    async function processSingleRecurring(id) {
+      const res = await apiRequest(`/api/recurring/${id}/process/`, {
+        method: 'POST',
+        body: {}
+      });
+      if (res.ok) {
+        const data = await res.json();
+        alert(data.message);
+        await loadAllData();
+      } else {
+        alert('Failed to process recurring entry.');
+      }
+    }
+
+    async function processAllRecurring() {
+      const res = await apiRequest('/api/recurring/process-all/', {
+        method: 'POST',
+        body: {}
+      });
+      if (res.ok) {
+        const data = await res.json();
+        alert(data.message);
+        await loadAllData();
+      } else {
+        alert('Failed to run processor.');
+      }
+    }
+
+    async function downloadTransactionsCSV() {
+      try {
+        const res = await apiRequest('/api/transactions/export-csv/');
+        if (!res.ok) return alert('Failed to download CSV.');
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `transactions_${currentUser ? currentUser.username : 'user'}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function exportBreakdownCSV() {
+      try {
+        const now = new Date();
+        const res = await apiRequest(`/api/analytics/category-breakdown/export-csv/?year=${now.getFullYear()}&month=${now.getMonth() + 1}`);
+        if (!res.ok) return alert('Failed to download breakdown CSV.');
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `category_breakdown_${now.getFullYear()}_${now.getMonth() + 1}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function loadAllData() {
+      await loadCategories();
+      await Promise.all([
+        loadAnalytics(),
+        loadTransactions(),
+        loadBudgets(),
+        loadRecurring()
+      ]);
+    }
+
+    // Auto-init on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      const savedToken = localStorage.getItem('expense_jwt_token');
+      const savedUser = localStorage.getItem('expense_user');
+      if (savedToken && savedUser) {
+        currentToken = savedToken;
+        currentUser = JSON.parse(savedUser);
+        updateAuthUI();
+        await loadAllData();
+      } else {
+        await generateNewTestUser();
+      }
+    });
+  </script>
+</body>
 </html>
