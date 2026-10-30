@@ -3,26 +3,51 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Personal Expense Tracker API | High-Performance REST API</title>
-  <meta name="description" content="Production-ready Personal Expense Tracker REST API built with Django, DRF, PostgreSQL, JWT, and Pandas.">
+  <title>ExpenseTracker | Financial Management & API</title>
+  <meta name="description" content="Personal Expense Tracker with category budgets, recurring entries, and REST API endpoints.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --bg-dark: #090D16;
-      --card-bg: rgba(17, 24, 39, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --accent-primary: #6366F1;
-      --accent-glow: rgba(99, 102, 241, 0.35);
-      --accent-success: #10B981;
-      --accent-warning: #F59E0B;
-      --accent-danger: #EF4444;
-      --accent-cyan: #06B6D4;
-      --text-main: #F3F4F6;
-      --text-muted: #9CA3AF;
-      --code-bg: #030712;
+      --bg-body: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --bg-card-subtle: #F8FAFC;
+      --border-color: #E2E8F0;
+      --border-subtle: #F1F5F9;
+
+      --text-primary: #0F172A;
+      --text-secondary: #334155;
+      --text-muted: #64748B;
+      --text-light: #94A3B8;
+
+      --primary: #2563EB;
+      --primary-hover: #1D4ED8;
+      --primary-light: #EFF6FF;
+      --primary-border: #BFDBFE;
+
+      --success: #059669;
+      --success-bg: #ECFDF5;
+      --success-border: #A7F3D0;
+      --success-text: #065F46;
+
+      --danger: #DC2626;
+      --danger-bg: #FEF2F2;
+      --danger-border: #FECACA;
+      --danger-text: #991B1B;
+
+      --warning: #D97706;
+      --warning-bg: #FFFBEB;
+      --warning-border: #FDE68A;
+      --warning-text: #92400E;
+
+      --code-bg: #0F172A;
+      --code-text: #E2E8F0;
+
+      --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+      --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
     }
 
     * {
@@ -32,232 +57,210 @@
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12), transparent 45%),
-                  radial-gradient(circle at 85% 75%, rgba(16, 185, 129, 0.08), transparent 45%),
-                  var(--bg-dark);
-      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-secondary);
       min-height: 100vh;
-      line-height: 1.6;
+      line-height: 1.5;
       padding-bottom: 60px;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Header Nav */
+    /* Top Navigation Header */
     header {
-      backdrop-filter: blur(16px);
-      background: rgba(9, 13, 22, 0.8);
-      border-bottom: 1px solid var(--card-border);
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-color);
       position: sticky;
       top: 0;
       z-index: 50;
-      padding: 16px 32px;
+      padding: 14px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: var(--shadow-xs);
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 12px;
+      text-decoration: none;
     }
 
     .brand-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #6366F1, #8B5CF6);
-      border-radius: 12px;
+      width: 38px;
+      height: 38px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+      border-radius: 10px;
       display: grid;
       place-items: center;
-      box-shadow: 0 0 20px var(--accent-glow);
-      font-size: 20px;
+    }
+
+    .brand-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .brand-text h1 {
-      font-size: 1.15rem;
+      font-size: 1.08rem;
       font-weight: 700;
-      letter-spacing: -0.02em;
-      background: linear-gradient(to right, #FFFFFF, #CBD5E1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-text h1 .version-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: var(--bg-body);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      padding: 1px 7px;
+      border-radius: 999px;
     }
 
     .brand-text span {
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
       display: block;
-      margin-top: -2px;
     }
 
-    .nav-tags {
+    .header-links {
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .pill {
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--card-border);
-      color: #E2E8F0;
-      display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 10px;
     }
-
-    .pill.jwt { border-color: rgba(99, 102, 241, 0.4); color: #818CF8; }
-    .pill.postgres { border-color: rgba(6, 182, 212, 0.4); color: #22D3EE; }
-    .pill.pandas { border-color: rgba(245, 158, 11, 0.4); color: #FBBF24; }
-    .pill.orm { border-color: rgba(16, 185, 129, 0.4); color: #34D399; }
 
     /* Main Container */
     .container {
-      max-width: 1240px;
-      margin: 32px auto 0;
+      max-width: 1200px;
+      margin: 28px auto 0;
       padding: 0 24px;
     }
 
-    /* Hero Banner */
-    .hero-card {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 32px 36px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-      margin-bottom: 32px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-card::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-card h2 {
-      font-size: 1.85rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 8px;
-    }
-
-    .hero-card p {
-      color: #94A3B8;
-      font-size: 1.02rem;
-      max-width: 860px;
-    }
-
-    /* Resume Specification Checklist */
-    .specs-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      margin-top: 24px;
-    }
-
-    .spec-item {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 16px;
+    /* Page Header Section */
+    .page-header {
       display: flex;
-      gap: 12px;
+      justify-content: space-between;
       align-items: flex-start;
-      transition: all 0.2s ease;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
-    .spec-item:hover {
-      border-color: rgba(99, 102, 241, 0.4);
-      transform: translateY(-2px);
+    .page-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
     }
 
-    .spec-badge {
-      font-size: 1.1rem;
-      line-height: 1;
-    }
-
-    .spec-content h4 {
+    .page-header p {
       font-size: 0.92rem;
-      font-weight: 600;
-      color: #F8FAFC;
-      margin-bottom: 4px;
+      color: var(--text-muted);
+      margin-top: 2px;
     }
 
-    .spec-content p {
-      font-size: 0.8rem;
-      color: #94A3B8;
-      line-height: 1.4;
+    /* Auth Status Bar */
+    .auth-banner {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-xs);
     }
 
-    /* Tabs & Content */
+    .auth-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+    }
+
+    /* Tabs Segmented Control */
     .tab-nav {
       display: flex;
-      gap: 8px;
-      border-bottom: 1px solid var(--card-border);
+      gap: 4px;
+      background: #F1F5F9;
+      border: 1px solid var(--border-color);
+      padding: 4px;
+      border-radius: 10px;
       margin-bottom: 24px;
       overflow-x: auto;
-      padding-bottom: 4px;
     }
 
     .tab-btn {
-      background: none;
+      background: transparent;
       border: none;
       color: var(--text-muted);
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       font-weight: 600;
-      padding: 10px 18px;
-      border-radius: 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      white-space: nowrap;
     }
 
     .tab-btn:hover {
-      color: var(--text-main);
-      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-primary);
     }
 
     .tab-btn.active {
-      color: #FFFFFF;
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid rgba(99, 102, 241, 0.3);
+      background: #FFFFFF;
+      color: var(--text-primary);
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
     }
 
     .tab-pane {
       display: none;
-      animation: fadeIn 0.3s ease;
     }
 
     .tab-pane.active {
       display: block;
+      animation: fadeIn 0.2s ease;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
+      from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     /* Cards */
     .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
       padding: 24px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      box-shadow: var(--shadow-card);
       margin-bottom: 24px;
     }
 
@@ -266,87 +269,78 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .card-title {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 700;
       letter-spacing: -0.01em;
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    /* Auth Console Bar */
-    .auth-banner {
-      background: rgba(99, 102, 241, 0.08);
-      border: 1px solid rgba(99, 102, 241, 0.25);
-      border-radius: 14px;
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
-    .auth-status {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.9rem;
-    }
-
-    .status-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--accent-success);
-      box-shadow: 0 0 10px var(--accent-success);
-    }
-
+    /* Buttons */
     .btn {
       font-family: inherit;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       font-weight: 600;
-      padding: 8px 16px;
+      padding: 7px 14px;
       border-radius: 8px;
       border: 1px solid transparent;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.2s ease;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      line-height: 1.4;
+    }
+
+    .btn svg {
+      width: 14px;
+      height: 14px;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #6366F1, #4F46E5);
-      color: white;
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary-hover);
+      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.18);
     }
 
     .btn-primary:hover {
-      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.45);
-      transform: translateY(-1px);
+      background: var(--primary-hover);
     }
 
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: var(--card-border);
-      color: #E2E8F0;
+      background: #FFFFFF;
+      border-color: var(--border-color);
+      color: var(--text-secondary);
+      box-shadow: var(--shadow-xs);
     }
 
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: var(--bg-body);
+      border-color: #CBD5E1;
+      color: var(--text-primary);
     }
 
     .btn-success {
-      background: linear-gradient(135deg, #10B981, #059669);
-      color: white;
+      background: var(--success);
+      color: #FFFFFF;
+      border-color: #047857;
+      box-shadow: 0 1px 2px rgba(5, 150, 105, 0.18);
     }
 
-    /* Grid for Metrics */
+    .btn-success:hover {
+      background: #047857;
+    }
+
+    /* Metrics Grid */
     .metrics-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -355,40 +349,42 @@
     }
 
     .metric-box {
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow-xs);
     }
 
     .metric-label {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       margin-bottom: 6px;
     }
 
     .metric-val {
-      font-size: 1.65rem;
-      font-weight: 800;
+      font-size: 1.7rem;
+      font-weight: 700;
       letter-spacing: -0.02em;
-      color: #F8FAFC;
+      color: var(--text-primary);
+      line-height: 1.2;
     }
 
     .metric-hint {
       font-size: 0.75rem;
-      color: #64748B;
-      margin-top: 4px;
+      color: var(--text-light);
+      margin-top: 6px;
     }
 
     /* Tables */
     .table-wrapper {
       overflow-x: auto;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: #FFFFFF;
     }
 
     table {
@@ -399,17 +395,20 @@
     }
 
     th {
-      background: rgba(15, 23, 42, 0.95);
+      background: #F8FAFC;
       padding: 12px 16px;
       color: var(--text-muted);
       font-weight: 600;
-      border-bottom: 1px solid var(--card-border);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-color);
     }
 
     td {
       padding: 14px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: #E2E8F0;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
     }
 
     tr:last-child td {
@@ -417,13 +416,13 @@
     }
 
     tr:hover td {
-      background: rgba(255, 255, 255, 0.02);
+      background: #F8FAFC;
     }
 
     /* Progress bar */
     .progress-bar-bg {
-      background: rgba(255, 255, 255, 0.08);
-      height: 8px;
+      background: #E2E8F0;
+      height: 6px;
       border-radius: 999px;
       overflow: hidden;
       margin-top: 6px;
@@ -433,39 +432,88 @@
     .progress-bar-fill {
       height: 100%;
       border-radius: 999px;
-      transition: width 0.4s ease;
+      transition: width 0.3s ease;
     }
 
-    /* Code & Terminal */
-    pre, code {
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .terminal-box {
-      background: var(--code-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 16px;
-      font-size: 0.85rem;
-      color: #38BDF8;
-      overflow-x: auto;
-      margin-top: 12px;
-    }
-
+    /* Badges & Tags */
     .badge-tag {
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       padding: 3px 8px;
       border-radius: 6px;
       font-weight: 600;
       display: inline-block;
+      line-height: 1.3;
     }
 
-    .badge-income { background: rgba(16, 185, 129, 0.15); color: #34D399; }
-    .badge-expense { background: rgba(239, 68, 68, 0.15); color: #F87171; }
-    .badge-exceeded { background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.4); }
-    .badge-ok { background: rgba(16, 185, 129, 0.2); color: #10B981; }
+    .badge-income {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 1px solid var(--success-border);
+    }
 
-    /* Interactive Inputs */
+    .badge-expense {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+    }
+
+    .badge-exceeded {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid var(--danger-border);
+      font-weight: 700;
+    }
+
+    .badge-ok {
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid var(--success-border);
+    }
+
+    .pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pill.jwt {
+      background: #EEF2FF;
+      color: #4338CA;
+      border: 1px solid #C7D2FE;
+    }
+
+    .pill.orm {
+      background: #ECFDF5;
+      color: #047857;
+      border: 1px solid #A7F3D0;
+    }
+
+    .pill.pandas {
+      background: #FFFBEB;
+      color: #92400E;
+      border: 1px solid #FDE68A;
+    }
+
+    /* Forms & Inline Modals */
+    .form-panel {
+      background: #F8FAFC;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-panel h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
     .form-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -475,53 +523,80 @@
 
     .input-group label {
       font-size: 0.78rem;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       display: block;
       margin-bottom: 4px;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .input-group input, .input-group select {
       width: 100%;
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
       border-radius: 8px;
       padding: 8px 12px;
-      color: white;
+      color: var(--text-primary);
       font-family: inherit;
       font-size: 0.85rem;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
 
     .input-group input:focus, .input-group select:focus {
-      border-color: var(--accent-primary);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    /* Code & Terminal */
+    pre, code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    code {
+      font-size: 0.82rem;
+      background: #F1F5F9;
+      color: var(--text-primary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    .terminal-box {
+      background: var(--code-bg);
+      border: 1px solid #1E293B;
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-size: 0.84rem;
+      color: #38BDF8;
+      overflow-x: auto;
+      margin-top: 12px;
+      line-height: 1.6;
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- Top Header -->
   <header>
-    <div class="brand">
-      <div class="brand-icon">💳</div>
+    <a href="/" class="brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24">
+          <rect x="2" y="5" width="20" height="14" rx="3"></rect>
+          <line x1="2" y1="10" x2="22" y2="10"></line>
+        </svg>
+      </div>
       <div class="brand-text">
-        <h1>Personal Expense Tracker API</h1>
-        <span>Python • Django • DRF • PostgreSQL • JWT • Pandas</span>
+        <h1>ExpenseTracker <span class="version-tag">v1.0</span></h1>
+        <span>Personal Finance Management & REST API</span>
       </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-      <div class="nav-tags">
-        <span class="pill jwt">🛡️ JWT Auth</span>
-        <span class="pill orm">⚡ ORM aggregate() & annotate()</span>
-        <span class="pill pandas">🐼 Pandas CSV Export</span>
-        <span class="pill postgres">🐘 PostgreSQL</span>
-      </div>
-      <a href="/swagger/" target="_blank" class="btn btn-primary" style="text-decoration: none; font-size: 0.82rem; padding: 6px 14px; background: linear-gradient(135deg, #10B981, #059669); border: none; box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);">
-        ⚡ Swagger UI ↗
+    </a>
+    
+    <div class="header-links">
+      <a href="/swagger/" target="_blank" class="btn btn-secondary">
+        Swagger Docs ↗
       </a>
-      <a href="/redoc/" target="_blank" class="btn btn-secondary" style="text-decoration: none; font-size: 0.82rem; padding: 6px 14px;">
-        📘 Redoc ↗
+      <a href="/redoc/" target="_blank" class="btn btn-secondary">
+        Redoc ↗
       </a>
     </div>
   </header>
@@ -529,42 +604,11 @@
   <!-- Container -->
   <div class="container">
 
-    <!-- Hero Card -->
-    <div class="hero-card">
-      <h2>Production REST API Architecture</h2>
-      <p>
-        Full-featured API tracking personal income and expenses with customizable categories, automated recurring entries, and strict per-category monthly budget limits. Designed for multi-tenant data isolation via JSON Web Tokens, ORM-level analytical aggregations, and high-performance Pandas CSV reporting.
-      </p>
-
-      <div class="specs-grid">
-        <div class="spec-item">
-          <div class="spec-badge">🔒</div>
-          <div class="spec-content">
-            <h4>JWT User Isolation</h4>
-            <p>Every endpoint is scoped to <code>request.user</code>. Users can never view or modify foreign transactions, budgets, or categories.</p>
-          </div>
-        </div>
-        <div class="spec-item">
-          <div class="spec-badge">📊</div>
-          <div class="spec-content">
-            <h4>ORM aggregate() & annotate()</h4>
-            <p>Computes instant monthly totals, net savings, savings rate, and category spending distributions directly in the database engine.</p>
-          </div>
-        </div>
-        <div class="spec-item">
-          <div class="spec-badge">🐼</div>
-          <div class="spec-content">
-            <h4>Pandas CSV Export</h4>
-            <p>Transforms filtered transactions and breakdown reports into clean, standard RFC 4180 CSV attachments via Pandas DataFrame streams.</p>
-          </div>
-        </div>
-        <div class="spec-item">
-          <div class="spec-badge">🔄</div>
-          <div class="spec-content">
-            <h4>Automated Recurring Plans</h4>
-            <p>Daily, weekly, monthly, and yearly recurring entries processed automatically via API action or Django management command.</p>
-          </div>
-        </div>
+    <!-- Page Title Bar -->
+    <div class="page-header">
+      <div>
+        <h2>Financial Management Console</h2>
+        <p>Monitor personal transactions, category budgets, automated recurring plans, and live analytics.</p>
       </div>
     </div>
 
@@ -574,65 +618,62 @@
         <span class="status-dot" id="statusDot"></span>
         <span id="authStatusText">Demo Mode: Authenticated as <strong>demo_user</strong></span>
       </div>
-      <div style="display: flex; gap: 8px;">
-        <button class="btn btn-secondary" onclick="generateNewTestUser()">⚡ Generate Fresh User</button>
-        <button class="btn btn-secondary" onclick="copyJwtToken()">📋 Copy Access Token</button>
-        <a href="/swagger/" target="_blank" class="btn btn-secondary" style="text-decoration: none;">🚀 Test via Swagger UI ↗</a>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="btn btn-secondary" onclick="generateNewTestUser()">Generate Fresh User</button>
+        <button class="btn btn-secondary" onclick="copyJwtToken()">Copy Access Token</button>
+        <a href="/swagger/" target="_blank" class="btn btn-secondary" style="text-decoration: none;">Swagger UI ↗</a>
       </div>
     </div>
 
     <!-- Navigation Tabs -->
     <div class="tab-nav">
-      <button class="tab-btn active" onclick="switchTab('analytics')">📈 Analytics & ORM Metrics</button>
-      <button class="tab-btn" onclick="switchTab('transactions')">💸 Transactions & CSV</button>
-      <button class="tab-btn" onclick="switchTab('budgets')">🎯 Budget Limits & Alerts</button>
-      <button class="tab-btn" onclick="switchTab('recurring')">🔁 Recurring Entries</button>
-      <button class="tab-btn" onclick="switchTab('endpoints')">📖 API Endpoints Reference</button>
-      <a href="/swagger/" target="_blank" class="tab-btn" style="text-decoration: none; color: #34D399;">⚡ Interactive Swagger Docs ↗</a>
+      <button class="tab-btn active" onclick="switchTab('analytics')">Overview & Analytics</button>
+      <button class="tab-btn" onclick="switchTab('transactions')">Transactions</button>
+      <button class="tab-btn" onclick="switchTab('budgets')">Budgets & Limits</button>
+      <button class="tab-btn" onclick="switchTab('recurring')">Recurring Plans</button>
+      <button class="tab-btn" onclick="switchTab('endpoints')">API Reference</button>
     </div>
 
-    <!-- TAB 1: Analytics & ORM -->
+    <!-- TAB 1: Analytics & Metrics -->
     <div class="tab-pane active" id="tab-analytics">
       <div class="card">
         <div class="card-header">
           <div class="card-title">
-            <span>⚡ Monthly Spending Summary</span>
-            <span class="pill orm">Django ORM aggregate()</span>
+            <span>Monthly Spending Summary</span>
           </div>
           <div>
-            <span style="font-size: 0.85rem; color: var(--text-muted);" id="summaryDateLabel">October 2026</span>
+            <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;" id="summaryDateLabel">Current Month</span>
           </div>
         </div>
 
         <div class="metrics-grid">
           <div class="metric-box">
             <div class="metric-label">Total Income</div>
-            <div class="metric-val" style="color: #34D399;" id="metricIncome">$0.00</div>
-            <div class="metric-hint">aggregate(Sum('amount'))</div>
+            <div class="metric-val" style="color: #059669;" id="metricIncome">$0.00</div>
+            <div class="metric-hint">Total monthly inflow</div>
           </div>
           <div class="metric-box">
             <div class="metric-label">Total Expenses</div>
-            <div class="metric-val" style="color: #F87171;" id="metricExpense">$0.00</div>
-            <div class="metric-hint">aggregate(Sum('amount'))</div>
+            <div class="metric-val" style="color: #DC2626;" id="metricExpense">$0.00</div>
+            <div class="metric-hint">Total monthly outflow</div>
           </div>
           <div class="metric-box">
             <div class="metric-label">Net Savings</div>
-            <div class="metric-val" style="color: #60A5FA;" id="metricSavings">$0.00</div>
-            <div class="metric-hint">Income - Expenses</div>
+            <div class="metric-val" style="color: #2563EB;" id="metricSavings">$0.00</div>
+            <div class="metric-hint">Income minus expenses</div>
           </div>
           <div class="metric-box">
             <div class="metric-label">Savings Rate</div>
-            <div class="metric-val" style="color: #FBBF24;" id="metricSavingsRate">0.0%</div>
-            <div class="metric-hint">(Savings / Income) * 100</div>
+            <div class="metric-val" style="color: #0F172A;" id="metricSavingsRate">0.0%</div>
+            <div class="metric-hint">Percentage of income saved</div>
           </div>
         </div>
 
         <div class="card-header" style="margin-top: 16px;">
           <div class="card-title">
-            <span>📊 Category-Wise Breakdown</span>
-            <span class="pill orm">Django ORM annotate(Sum('amount'))</span>
+            <span>Category Spending Breakdown</span>
           </div>
-          <button class="btn btn-secondary" onclick="exportBreakdownCSV()">🐼 Export Breakdown (Pandas CSV)</button>
+          <button class="btn btn-secondary" onclick="exportBreakdownCSV()">Export CSV</button>
         </div>
 
         <div class="table-wrapper">
@@ -642,8 +683,8 @@
                 <th>Category</th>
                 <th>Total Spent</th>
                 <th>% of Total</th>
-                <th>Tx Count</th>
-                <th>Avg Amount</th>
+                <th>Transactions</th>
+                <th>Average Amount</th>
                 <th>Budget Limit</th>
                 <th>Budget Status</th>
               </tr>
@@ -651,7 +692,7 @@
             <tbody id="breakdownTableBody">
               <tr>
                 <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">
-                  Loading ORM aggregations...
+                  Loading spending breakdown...
                 </td>
               </tr>
             </tbody>
@@ -665,18 +706,17 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">
-            <span>💸 Personal Transactions</span>
-            <span class="pill pandas">Pandas Export Enabled</span>
+            <span>Personal Transactions</span>
           </div>
           <div style="display: flex; gap: 8px;">
             <button class="btn btn-primary" onclick="toggleAddTransactionModal()">+ Add Transaction</button>
-            <button class="btn btn-success" onclick="downloadTransactionsCSV()">🐼 Download CSV (Pandas)</button>
+            <button class="btn btn-success" onclick="downloadTransactionsCSV()">Download CSV</button>
           </div>
         </div>
 
         <!-- Add Transaction Inline Form -->
-        <div id="addTxForm" style="display: none; background: rgba(15, 23, 42, 0.6); padding: 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--card-border);">
-          <h4 style="font-size: 0.95rem; margin-bottom: 12px;">Record New Income or Expense</h4>
+        <div id="addTxForm" class="form-panel" style="display: none;">
+          <h4>Record New Transaction</h4>
           <div class="form-row">
             <div class="input-group">
               <label>Type</label>
@@ -737,13 +777,13 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">
-            <span>🎯 Monthly Budget Limits per Category</span>
+            <span>Category Budget Limits</span>
           </div>
-          <button class="btn btn-primary" onclick="toggleAddBudgetModal()">+ Set Category Budget</button>
+          <button class="btn btn-primary" onclick="toggleAddBudgetModal()">+ Set Budget Limit</button>
         </div>
 
-        <div id="addBudgetForm" style="display: none; background: rgba(15, 23, 42, 0.6); padding: 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--card-border);">
-          <h4 style="font-size: 0.95rem; margin-bottom: 12px;">Define Category Monthly Limit</h4>
+        <div id="addBudgetForm" class="form-panel" style="display: none;">
+          <h4>Define Category Monthly Limit</h4>
           <div class="form-row">
             <div class="input-group">
               <label>Category</label>
@@ -764,7 +804,7 @@
           </div>
           <div style="display: flex; justify-content: flex-end; gap: 8px;">
             <button class="btn btn-secondary" onclick="toggleAddBudgetModal()">Cancel</button>
-            <button class="btn btn-primary" onclick="submitBudget()">Save Budget Limit</button>
+            <button class="btn btn-primary" onclick="submitBudget()">Save Budget</button>
           </div>
         </div>
 
@@ -773,11 +813,11 @@
             <thead>
               <tr>
                 <th>Category</th>
-                <th>Month / Year</th>
-                <th>Limit ($)</th>
-                <th>Spent ($)</th>
-                <th>Remaining ($)</th>
-                <th>% Used</th>
+                <th>Period</th>
+                <th>Limit</th>
+                <th>Spent</th>
+                <th>Remaining</th>
+                <th>Utilization</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -798,16 +838,16 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">
-            <span>🔁 Recurring Entries (Automated Income & Expenses)</span>
+            <span>Recurring Transactions</span>
           </div>
           <div style="display: flex; gap: 8px;">
-            <button class="btn btn-secondary" onclick="processAllRecurring()">⚡ Run Processor Now</button>
+            <button class="btn btn-secondary" onclick="processAllRecurring()">Run Processor Now</button>
             <button class="btn btn-primary" onclick="toggleAddRecurringModal()">+ New Recurring Plan</button>
           </div>
         </div>
 
-        <div id="addRecurringForm" style="display: none; background: rgba(15, 23, 42, 0.6); padding: 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--card-border);">
-          <h4 style="font-size: 0.95rem; margin-bottom: 12px;">Create Recurring Entry</h4>
+        <div id="addRecurringForm" class="form-panel" style="display: none;">
+          <h4>Create Recurring Schedule</h4>
           <div class="form-row">
             <div class="input-group">
               <label>Type</label>
@@ -878,7 +918,7 @@
     <div class="tab-pane" id="tab-endpoints">
       <div class="card">
         <div class="card-title" style="margin-bottom: 16px;">
-          <span>📖 REST API Endpoints Quick Reference</span>
+          <span>REST API Endpoints Reference</span>
         </div>
 
         <div class="table-wrapper">
@@ -893,89 +933,89 @@
             </thead>
             <tbody>
               <tr>
-                <td><span class="pill jwt">POST</span></td>
+                <td><span class="pill orm">POST</span></td>
                 <td><code>/api/auth/register/</code></td>
                 <td>None</td>
-                <td>Register user with username, email, password, and generate default categories</td>
+                <td>Register user with username, email, password, and generate starter categories</td>
               </tr>
               <tr>
-                <td><span class="pill jwt">POST</span></td>
+                <td><span class="pill orm">POST</span></td>
                 <td><code>/api/auth/login/</code></td>
                 <td>None</td>
                 <td>Obtain JWT Access & Refresh token pair</td>
               </tr>
               <tr>
-                <td><span class="pill jwt">POST</span></td>
+                <td><span class="pill orm">POST</span></td>
                 <td><code>/api/auth/refresh/</code></td>
                 <td>None</td>
                 <td>Refresh JWT access token</td>
               </tr>
               <tr>
-                <td><span class="pill orm">GET, POST</span></td>
+                <td><span class="pill jwt">GET, POST</span></td>
                 <td><code>/api/transactions/</code></td>
                 <td>Bearer JWT</td>
                 <td>List user transactions (supports filters: date range, category, amount, recurring)</td>
               </tr>
               <tr>
-                <td><span class="pill pandas">GET</span></td>
+                <td><span class="pill jwt">GET</span></td>
                 <td><code>/api/transactions/export-csv/</code></td>
                 <td>Bearer JWT</td>
-                <td>Export filtered transactions as downloadable CSV using <strong>Pandas</strong></td>
+                <td>Export filtered transactions as downloadable CSV via Pandas</td>
               </tr>
               <tr>
-                <td><span class="pill orm">GET, POST</span></td>
+                <td><span class="pill jwt">GET, POST</span></td>
                 <td><code>/api/categories/</code></td>
                 <td>Bearer JWT</td>
                 <td>User-scoped income and expense categories</td>
               </tr>
               <tr>
-                <td><span class="pill orm">GET, POST</span></td>
+                <td><span class="pill jwt">GET, POST</span></td>
                 <td><code>/api/budgets/</code></td>
                 <td>Bearer JWT</td>
                 <td>Category budget limits per month/year with spent & exceeded calculations</td>
               </tr>
               <tr>
-                <td><span class="pill orm">GET</span></td>
+                <td><span class="pill jwt">GET</span></td>
                 <td><code>/api/budgets/status/?year=2026&month=10</code></td>
                 <td>Bearer JWT</td>
                 <td>Overview of all active budgets and spending alerts for specified month</td>
               </tr>
               <tr>
-                <td><span class="pill orm">GET, POST</span></td>
+                <td><span class="pill jwt">GET, POST</span></td>
                 <td><code>/api/recurring/</code></td>
                 <td>Bearer JWT</td>
                 <td>Recurring income & expense plans (daily, weekly, monthly, yearly)</td>
               </tr>
               <tr>
-                <td><span class="pill orm">POST</span></td>
+                <td><span class="pill jwt">POST</span></td>
                 <td><code>/api/recurring/process-all/</code></td>
                 <td>Bearer JWT</td>
                 <td>Process all due recurring occurrences into real transactions</td>
               </tr>
               <tr>
-                <td><span class="pill orm">GET</span></td>
+                <td><span class="pill jwt">GET</span></td>
                 <td><code>/api/analytics/monthly-summary/?year=2026&month=10</code></td>
                 <td>Bearer JWT</td>
-                <td>Monthly spending, income & savings summary via <strong>Django ORM aggregate()</strong></td>
+                <td>Monthly spending, income & savings summary</td>
               </tr>
               <tr>
-                <td><span class="pill orm">GET</span></td>
+                <td><span class="pill jwt">GET</span></td>
                 <td><code>/api/analytics/category-breakdown/?year=2026&month=10</code></td>
                 <td>Bearer JWT</td>
-                <td>Category-wise breakdown via <strong>Django ORM annotate()</strong></td>
+                <td>Category-wise spending distribution</td>
               </tr>
               <tr>
-                <td><span class="pill pandas">GET</span></td>
+                <td><span class="pill jwt">GET</span></td>
                 <td><code>/api/analytics/category-breakdown/export-csv/</code></td>
                 <td>Bearer JWT</td>
-                <td>Category spending breakdown CSV export powered by <strong>Pandas</strong></td>
+                <td>Category spending breakdown CSV export</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <div style="margin-top: 24px;">
-          <h4 style="font-size: 0.95rem; margin-bottom: 8px;">Sample cURL Request with JWT</h4>
+          <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Sample cURL Request with JWT</h4>
           <div class="terminal-box" id="curlExample">
 curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&month=10" \
      -H "Authorization: Bearer &lt;YOUR_ACCESS_TOKEN&gt;" \
@@ -1056,7 +1096,6 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
     }
 
     async function seedInitialDemoData() {
-      // Fetch user's default categories
       await loadCategories();
       const salaryCat = categoriesList.find(c => c.name === 'Salary');
       const foodCat = categoriesList.find(c => c.name === 'Food & Dining');
@@ -1072,7 +1111,7 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
             amount: '6500.00',
             category: salaryCat.id,
             date: today,
-            description: 'Monthly Tech Salary'
+            description: 'Monthly Salary'
           }
         });
       }
@@ -1084,7 +1123,7 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
             amount: '1850.00',
             category: rentCat.id,
             date: today,
-            description: 'Downtown Apartment Rent'
+            description: 'Apartment Rent'
           }
         });
       }
@@ -1096,7 +1135,7 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
             amount: '380.50',
             category: foodCat.id,
             date: today,
-            description: 'Whole Foods Market'
+            description: 'Grocery Market'
           }
         });
         // Create budget for Food
@@ -1131,7 +1170,7 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
             category: salaryCat.id,
             transaction_type: 'INCOME',
             amount: '6500.00',
-            description: 'Automated Bi-weekly Paycheck',
+            description: 'Automated Monthly Salary',
             frequency: 'MONTHLY',
             start_date: today,
             next_date: today,
@@ -1144,7 +1183,7 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
     function updateAuthUI() {
       const authStatusText = document.getElementById('authStatusText');
       if (currentUser && currentToken) {
-        authStatusText.innerHTML = `Active Session: <strong>${currentUser.username}</strong> | JWT Secured`;
+        authStatusText.innerHTML = `Active Session: <strong>${currentUser.username}</strong> | JWT Authorized`;
       }
     }
 
@@ -1220,24 +1259,24 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
         <tr>
           <td>
             <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: ${item.category_color}; margin-right: 8px;"></span>
-            <strong>${item.category_name}</strong>
+            <strong style="color: var(--text-primary);">${item.category_name}</strong>
           </td>
-          <td style="font-weight: 600;">$${parseFloat(item.total_spent).toFixed(2)}</td>
+          <td style="font-weight: 600; color: var(--text-primary);">$${parseFloat(item.total_spent).toFixed(2)}</td>
           <td>
-            <div>${item.percentage_of_total}%</div>
+            <div style="font-weight: 500;">${item.percentage_of_total}%</div>
             <div class="progress-bar-bg" style="width: 100px;">
               <div class="progress-bar-fill" style="width: ${Math.min(item.percentage_of_total, 100)}%; background: ${item.category_color};"></div>
             </div>
           </td>
           <td>${item.transaction_count}</td>
           <td>$${parseFloat(item.avg_transaction).toFixed(2)}</td>
-          <td>${item.budget_limit ? `$${parseFloat(item.budget_limit).toFixed(2)}` : '<span style="color: #64748B;">No limit</span>'}</td>
+          <td>${item.budget_limit ? `$${parseFloat(item.budget_limit).toFixed(2)}` : '<span style="color: var(--text-light);">No limit</span>'}</td>
           <td>
             ${item.budget_limit 
               ? (item.is_budget_exceeded 
                   ? `<span class="badge-tag badge-exceeded">EXCEEDED (${item.budget_percentage_used}%)</span>` 
                   : `<span class="badge-tag badge-ok">${item.budget_percentage_used}% used</span>`) 
-              : '<span class="badge-tag" style="background: rgba(255,255,255,0.06);">Untracked</span>'}
+              : '<span class="badge-tag" style="background: #F1F5F9; color: var(--text-muted);">Untracked</span>'}
           </td>
         </tr>
       `).join('');
@@ -1269,11 +1308,11 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
             <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: ${t.category_color || '#94A3B8'}; margin-right: 6px;"></span>
             ${t.category_name || 'Uncategorized'}
           </td>
-          <td style="font-weight: 600; color: ${t.transaction_type === 'INCOME' ? '#34D399' : '#F87171'};">
+          <td style="font-weight: 600; color: ${t.transaction_type === 'INCOME' ? '#059669' : '#DC2626'};">
             ${t.transaction_type === 'INCOME' ? '+' : '-'}$${parseFloat(t.amount).toFixed(2)}
           </td>
           <td>${t.description || '-'}</td>
-          <td>${t.recurring_entry ? '<span class="pill jwt">🔁 Plan #' + t.recurring_entry + '</span>' : '-'}</td>
+          <td>${t.recurring_entry ? '<span class="pill jwt">Plan #' + t.recurring_entry + '</span>' : '-'}</td>
         </tr>
       `).join('');
     }
@@ -1300,22 +1339,22 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
         <tr>
           <td>
             <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: ${b.category_color || '#94A3B8'}; margin-right: 6px;"></span>
-            <strong>${b.category_name}</strong>
+            <strong style="color: var(--text-primary);">${b.category_name}</strong>
           </td>
           <td>${b.month}/${b.year}</td>
-          <td style="font-weight: 600;">$${parseFloat(b.amount_limit).toFixed(2)}</td>
-          <td style="color: #F87171;">$${parseFloat(b.spent_amount).toFixed(2)}</td>
-          <td style="color: ${parseFloat(b.remaining_amount) < 0 ? '#EF4444' : '#34D399'};">
+          <td style="font-weight: 600; color: var(--text-primary);">$${parseFloat(b.amount_limit).toFixed(2)}</td>
+          <td style="color: #DC2626; font-weight: 500;">$${parseFloat(b.spent_amount).toFixed(2)}</td>
+          <td style="color: ${parseFloat(b.remaining_amount) < 0 ? '#DC2626' : '#059669'}; font-weight: 500;">
             $${parseFloat(b.remaining_amount).toFixed(2)}
           </td>
           <td>
-            <div>${b.percentage_used}%</div>
+            <div style="font-weight: 500;">${b.percentage_used}%</div>
             <div class="progress-bar-bg" style="width: 100px;">
-              <div class="progress-bar-fill" style="width: ${Math.min(b.percentage_used, 100)}%; background: ${b.is_exceeded ? '#EF4444' : '#10B981'};"></div>
+              <div class="progress-bar-fill" style="width: ${Math.min(b.percentage_used, 100)}%; background: ${b.is_exceeded ? '#DC2626' : '#059669'};"></div>
             </div>
           </td>
           <td>
-            ${b.is_exceeded ? '<span class="badge-tag badge-exceeded">LIMIT EXCEEDED</span>' : '<span class="badge-tag badge-ok">ON TRACK</span>'}
+            ${b.is_exceeded ? '<span class="badge-tag badge-exceeded">EXCEEDED</span>' : '<span class="badge-tag badge-ok">ON TRACK</span>'}
           </td>
         </tr>
       `).join('');
@@ -1341,13 +1380,13 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
       }
       tbody.innerHTML = items.map(r => `
         <tr>
-          <td><strong>${r.description}</strong></td>
+          <td><strong style="color: var(--text-primary);">${r.description}</strong></td>
           <td><span class="badge-tag ${r.transaction_type === 'INCOME' ? 'badge-income' : 'badge-expense'}">${r.transaction_type}</span></td>
           <td>${r.category_name || '-'}</td>
-          <td style="font-weight: 600;">$${parseFloat(r.amount).toFixed(2)}</td>
-          <td><span class="pill">${r.frequency}</span></td>
+          <td style="font-weight: 600; color: var(--text-primary);">$${parseFloat(r.amount).toFixed(2)}</td>
+          <td><span class="pill jwt">${r.frequency}</span></td>
           <td>${r.next_date}</td>
-          <td>${r.is_active ? '<span class="badge-tag badge-ok">Active</span>' : '<span class="badge-tag">Paused</span>'}</td>
+          <td>${r.is_active ? '<span class="badge-tag badge-ok">Active</span>' : '<span class="badge-tag" style="background: #F1F5F9; color: var(--text-muted);">Paused</span>'}</td>
           <td>
             <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="processSingleRecurring(${r.id})">Execute</button>
           </td>
