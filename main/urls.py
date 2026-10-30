@@ -32,8 +32,8 @@ urlpatterns = [
 
     # Authentication & JWT Endpoints
     path('api/auth/register/', views.RegisterView.as_view(), name='auth-register'),
-    path('api/auth/login/', TokenObtainPairView.as_view(), name='auth-login'),
-    path('api/auth/token/', TokenObtainPairView.as_view(), name='token-obtain-pair'),
+    path('api/auth/login/', views.CustomTokenObtainPairView.as_view(), name='auth-login'),
+    path('api/auth/token/', views.CustomTokenObtainPairView.as_view(), name='token-obtain-pair'),
     path('api/auth/refresh/', TokenRefreshView.as_view(), name='auth-refresh'),
     path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
     path('api/auth/me/', views.UserProfileView.as_view(), name='auth-me'),

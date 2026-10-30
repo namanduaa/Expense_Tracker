@@ -92,6 +92,32 @@ class PersonalExpenseTrackerTests(APITestCase):
         self.assertIn('access', response.data)
         self.assertIn('refresh', response.data)
 
+    def test_registration_and_login_with_number(self):
+        """Test registering and logging in using phone number and password."""
+        # 1. Register with phone number
+        reg_url = reverse('auth-register')
+        reg_data = {
+            'number': '9876543210',
+            'password': 'SecurePass123!',
+            'password_confirm': 'SecurePass123!'
+        }
+        reg_res = self.client.post(reg_url, reg_data, format='json')
+        self.assertEqual(reg_res.status_code, status.HTTP_201_CREATED)
+        self.assertIn('tokens', reg_res.data)
+        self.assertEqual(reg_res.data['user']['username'], '9876543210')
+
+        # 2. Login with phone number
+        login_url = reverse('auth-login')
+        login_data = {
+            'number': '9876543210',
+            'password': 'SecurePass123!'
+        }
+        login_res = self.client.post(login_url, login_data, format='json')
+        self.assertEqual(login_res.status_code, status.HTTP_200_OK)
+        self.assertIn('access', login_res.data)
+        self.assertIn('refresh', login_res.data)
+
+
     def test_unauthenticated_request_rejected(self):
         """Endpoints are protected by JWT and reject unauthenticated requests."""
         self.clear_credentials()

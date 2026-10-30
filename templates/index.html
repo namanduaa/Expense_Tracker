@@ -47,7 +47,7 @@
 
       --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
       --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
-      --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 8px 24px -4px rgba(15, 23, 42, 0.12), 0 4px 8px -2px rgba(15, 23, 42, 0.06);
     }
 
     * {
@@ -140,6 +140,19 @@
       gap: 10px;
     }
 
+    .user-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      background: var(--bg-body);
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      border-radius: 8px;
+    }
+
     /* Main Container */
     .container {
       max-width: 1200px;
@@ -199,6 +212,7 @@
       border-radius: 50%;
       background: var(--success);
       box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+      flex-shrink: 0;
     }
 
     /* Tabs Segmented Control */
@@ -492,12 +506,6 @@
       border: 1px solid #A7F3D0;
     }
 
-    .pill.pandas {
-      background: #FFFBEB;
-      color: #92400E;
-      border: 1px solid #FDE68A;
-    }
-
     /* Forms & Inline Modals */
     .form-panel {
       background: #F8FAFC;
@@ -545,6 +553,109 @@
     .input-group input:focus, .input-group select:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    /* Modal Overlay & Dialog */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 400px;
+      padding: 28px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.96) translateY(6px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .modal-header h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .modal-header p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      line-height: 1;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 2px;
+      border-radius: 6px;
+      transition: color 0.15s;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .alert-error {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      color: #991B1B;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .modal-footer {
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .modal-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .modal-footer a:hover {
+      text-decoration: underline;
     }
 
     /* Code & Terminal */
@@ -598,6 +709,19 @@
       <a href="/redoc/" target="_blank" class="btn btn-secondary">
         Redoc ↗
       </a>
+
+      <!-- Auth Controls in Header -->
+      <div id="headerAuthLoggedOut" style="display: flex; gap: 8px;">
+        <button class="btn btn-secondary" onclick="openLoginModal()">Log In</button>
+        <button class="btn btn-primary" onclick="openSignupModal()">Sign Up</button>
+      </div>
+      <div id="headerAuthLoggedIn" style="display: none; align-items: center; gap: 10px;">
+        <span class="user-badge">
+          <span class="status-dot"></span>
+          <span id="headerUsername">User</span>
+        </span>
+        <button class="btn btn-secondary" onclick="logout()">Log Out</button>
+      </div>
     </div>
   </header>
 
@@ -616,12 +740,14 @@
     <div class="auth-banner" id="authBanner">
       <div class="auth-status">
         <span class="status-dot" id="statusDot"></span>
-        <span id="authStatusText">Demo Mode: Authenticated as <strong>demo_user</strong></span>
+        <span id="authStatusText">Signed in as <strong>demo_user</strong></span>
       </div>
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <button class="btn btn-secondary" onclick="generateNewTestUser()">Generate Fresh User</button>
-        <button class="btn btn-secondary" onclick="copyJwtToken()">Copy Access Token</button>
-        <a href="/swagger/" target="_blank" class="btn btn-secondary" style="text-decoration: none;">Swagger UI ↗</a>
+        <button class="btn btn-secondary" id="bannerLoginBtn" onclick="openLoginModal()">Log In</button>
+        <button class="btn btn-primary" id="bannerSignupBtn" onclick="openSignupModal()">Sign Up</button>
+        <button class="btn btn-secondary" id="bannerLogoutBtn" style="display: none;" onclick="logout()">Log Out</button>
+        <button class="btn btn-secondary" id="copyTokenBtn" onclick="copyJwtToken()">Copy Token</button>
+        <button class="btn btn-secondary" onclick="generateNewTestUser()">Demo Account</button>
       </div>
     </div>
 
@@ -936,13 +1062,13 @@
                 <td><span class="pill orm">POST</span></td>
                 <td><code>/api/auth/register/</code></td>
                 <td>None</td>
-                <td>Register user with username, email, password, and generate starter categories</td>
+                <td>Register user with phone number and password, and generate starter categories</td>
               </tr>
               <tr>
                 <td><span class="pill orm">POST</span></td>
                 <td><code>/api/auth/login/</code></td>
                 <td>None</td>
-                <td>Obtain JWT Access & Refresh token pair</td>
+                <td>Obtain JWT Access & Refresh token pair with phone number and password</td>
               </tr>
               <tr>
                 <td><span class="pill orm">POST</span></td>
@@ -1027,6 +1153,73 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
 
   </div>
 
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal-overlay" style="display: none;" onclick="handleBackdropClick(event, 'loginModal')">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3>Log In</h3>
+          <p>Enter your phone/mobile number and password</p>
+        </div>
+        <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+      </div>
+      <div id="loginError" class="alert-error" style="display: none;"></div>
+      <form onsubmit="handleLoginSubmit(event)">
+        <div class="input-group" style="margin-bottom: 14px;">
+          <label for="loginNumber">Phone / Mobile Number</label>
+          <input type="tel" id="loginNumber" placeholder="e.g. 9876543210" required autocomplete="username">
+        </div>
+        <div class="input-group" style="margin-bottom: 20px;">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password">
+        </div>
+        <button type="submit" id="loginSubmitBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 9px 16px;">
+          Log In
+        </button>
+      </form>
+      <div class="modal-footer">
+        <span>Don't have an account?</span>
+        <a href="javascript:void(0)" onclick="switchToSignup()">Sign Up</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sign Up Modal -->
+  <div id="signupModal" class="modal-overlay" style="display: none;" onclick="handleBackdropClick(event, 'signupModal')">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3>Create Account</h3>
+          <p>Sign up with your mobile number and password</p>
+        </div>
+        <button class="modal-close" onclick="closeSignupModal()">&times;</button>
+      </div>
+      <div id="signupError" class="alert-error" style="display: none;"></div>
+      <form onsubmit="handleSignupSubmit(event)">
+        <div class="input-group" style="margin-bottom: 14px;">
+          <label for="signupNumber">Phone / Mobile Number</label>
+          <input type="tel" id="signupNumber" placeholder="e.g. 9876543210" required autocomplete="tel">
+        </div>
+        <div class="input-group" style="margin-bottom: 14px;">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" placeholder="Minimum 6 characters" required autocomplete="new-password">
+          <span style="font-size: 0.72rem; color: var(--text-light); margin-top: 4px; display: block;">Min 6 characters, cannot be entirely numeric</span>
+        </div>
+        <div class="input-group" style="margin-bottom: 20px;">
+          <label for="signupPasswordConfirm">Confirm Password</label>
+          <input type="password" id="signupPasswordConfirm" placeholder="Re-enter password" required autocomplete="new-password">
+        </div>
+        <button type="submit" id="signupSubmitBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 9px 16px;">
+          Create Account & Sign In
+        </button>
+      </form>
+      <div class="modal-footer">
+        <span>Already have an account?</span>
+        <a href="javascript:void(0)" onclick="switchToLogin()">Log In</a>
+      </div>
+    </div>
+  </div>
+
   <script>
     let currentToken = null;
     let currentUser = null;
@@ -1048,6 +1241,43 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
       if (pane) pane.classList.add('active');
     }
 
+    /* Modal Handlers */
+    function openLoginModal() {
+      document.getElementById('loginModal').style.display = 'flex';
+      document.getElementById('loginError').style.display = 'none';
+      setTimeout(() => document.getElementById('loginNumber').focus(), 50);
+    }
+
+    function closeLoginModal() {
+      document.getElementById('loginModal').style.display = 'none';
+    }
+
+    function openSignupModal() {
+      document.getElementById('signupModal').style.display = 'flex';
+      document.getElementById('signupError').style.display = 'none';
+      setTimeout(() => document.getElementById('signupNumber').focus(), 50);
+    }
+
+    function closeSignupModal() {
+      document.getElementById('signupModal').style.display = 'none';
+    }
+
+    function switchToSignup() {
+      closeLoginModal();
+      openSignupModal();
+    }
+
+    function switchToLogin() {
+      closeSignupModal();
+      openLoginModal();
+    }
+
+    function handleBackdropClick(e, modalId) {
+      if (e.target.id === modalId) {
+        document.getElementById(modalId).style.display = 'none';
+      }
+    }
+
     async function apiRequest(url, options = {}) {
       if (!options.headers) options.headers = {};
       if (currentToken) {
@@ -1060,22 +1290,159 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
       return fetch(url, options);
     }
 
-    async function generateNewTestUser() {
-      const rand = Math.floor(Math.random() * 9000) + 1000;
-      const username = `demo_user_${rand}`;
-      const password = `Pass${rand}!12345`;
+    /* Auth Submit Handlers */
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const number = document.getElementById('loginNumber').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const errBox = document.getElementById('loginError');
+      const btn = document.getElementById('loginSubmitBtn');
+
+      if (!number || !password) {
+        errBox.textContent = 'Please enter both phone number and password.';
+        errBox.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Logging in...';
+      errBox.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/auth/login/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ number, password })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          currentToken = data.access;
+          currentUser = data.user || { username: number };
+          localStorage.setItem('expense_jwt_token', currentToken);
+          localStorage.setItem('expense_user', JSON.stringify(currentUser));
+          closeLoginModal();
+          document.getElementById('loginNumber').value = '';
+          document.getElementById('loginPassword').value = '';
+          updateAuthUI();
+          await loadAllData();
+        } else {
+          let msg = data.detail || (data.number ? data.number.join(' ') : 'Invalid credentials. Please verify your phone number and password.');
+          errBox.textContent = msg;
+          errBox.style.display = 'block';
+        }
+      } catch (err) {
+        console.error(err);
+        errBox.textContent = 'Network or server error during login.';
+        errBox.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Log In';
+      }
+    }
+
+    async function handleSignupSubmit(e) {
+      e.preventDefault();
+      const number = document.getElementById('signupNumber').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+      const errBox = document.getElementById('signupError');
+      const btn = document.getElementById('signupSubmitBtn');
+
+      if (!number || !password || !passwordConfirm) {
+        errBox.textContent = 'Please fill out all fields.';
+        errBox.style.display = 'block';
+        return;
+      }
+
+      if (password !== passwordConfirm) {
+        errBox.textContent = 'Passwords do not match.';
+        errBox.style.display = 'block';
+        return;
+      }
+
+      if (password.length < 6) {
+        errBox.textContent = 'Password must be at least 6 characters.';
+        errBox.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Creating account...';
+      errBox.style.display = 'none';
 
       try {
         const res = await fetch('/api/auth/register/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            username: username,
-            email: `${username}@example.com`,
+            number: number,
             password: password,
-            password_confirm: password,
-            first_name: 'Demo',
-            last_name: 'User'
+            password_confirm: passwordConfirm
+          })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          currentToken = data.tokens.access;
+          currentUser = data.user;
+          localStorage.setItem('expense_jwt_token', currentToken);
+          localStorage.setItem('expense_user', JSON.stringify(currentUser));
+          closeSignupModal();
+          document.getElementById('signupNumber').value = '';
+          document.getElementById('signupPassword').value = '';
+          document.getElementById('signupPasswordConfirm').value = '';
+          updateAuthUI();
+          await loadAllData();
+        } else {
+          let errMsg = '';
+          if (data.number) errMsg += (Array.isArray(data.number) ? data.number.join(' ') : data.number) + ' ';
+          if (data.password) errMsg += (Array.isArray(data.password) ? data.password.join(' ') : data.password) + ' ';
+          if (data.detail) errMsg += data.detail + ' ';
+          if (!errMsg) errMsg = JSON.stringify(data);
+          errBox.textContent = errMsg;
+          errBox.style.display = 'block';
+        }
+      } catch (err) {
+        console.error(err);
+        errBox.textContent = 'Network or server error during signup.';
+        errBox.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Account & Sign In';
+      }
+    }
+
+    function logout() {
+      currentToken = null;
+      currentUser = null;
+      localStorage.removeItem('expense_jwt_token');
+      localStorage.removeItem('expense_user');
+      updateAuthUI();
+      // Reset tables and metrics
+      document.getElementById('metricIncome').textContent = '$0.00';
+      document.getElementById('metricExpense').textContent = '$0.00';
+      document.getElementById('metricSavings').textContent = '$0.00';
+      document.getElementById('metricSavingsRate').textContent = '0.0%';
+      document.getElementById('breakdownTableBody').innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">Please log in or sign up to view category breakdown.</td></tr>';
+      document.getElementById('transactionsTableBody').innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">Please log in or sign up to view your transactions.</td></tr>';
+      document.getElementById('budgetsTableBody').innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">Please log in or sign up to view category budgets.</td></tr>';
+      document.getElementById('recurringTableBody').innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">Please log in or sign up to view recurring entries.</td></tr>';
+    }
+
+    async function generateNewTestUser() {
+      const rand = Math.floor(Math.random() * 9000000) + 1000000;
+      const number = `98${rand}`;
+      const password = `Pass${rand}!`;
+
+      try {
+        const res = await fetch('/api/auth/register/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            number: number,
+            password: password,
+            password_confirm: password
           })
         });
         const data = await res.json();
@@ -1088,7 +1455,7 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
           await seedInitialDemoData();
           await loadAllData();
         } else {
-          alert('Registration failed: ' + JSON.stringify(data));
+          alert('Demo user creation failed: ' + JSON.stringify(data));
         }
       } catch (err) {
         console.error(err);
@@ -1182,13 +1549,42 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
 
     function updateAuthUI() {
       const authStatusText = document.getElementById('authStatusText');
+      const statusDot = document.getElementById('statusDot');
+      const headerLoggedOut = document.getElementById('headerAuthLoggedOut');
+      const headerLoggedIn = document.getElementById('headerAuthLoggedIn');
+      const headerUsername = document.getElementById('headerUsername');
+      const bannerLoginBtn = document.getElementById('bannerLoginBtn');
+      const bannerSignupBtn = document.getElementById('bannerSignupBtn');
+      const bannerLogoutBtn = document.getElementById('bannerLogoutBtn');
+      const copyTokenBtn = document.getElementById('copyTokenBtn');
+
       if (currentUser && currentToken) {
-        authStatusText.innerHTML = `Active Session: <strong>${currentUser.username}</strong> | JWT Authorized`;
+        const uname = currentUser.username || 'User';
+        authStatusText.innerHTML = `Active Session: <strong>${uname}</strong> | JWT Authorized`;
+        statusDot.style.background = 'var(--success)';
+        if (headerLoggedOut) headerLoggedOut.style.display = 'none';
+        if (headerLoggedIn) {
+          headerLoggedIn.style.display = 'flex';
+          headerUsername.textContent = uname;
+        }
+        if (bannerLoginBtn) bannerLoginBtn.style.display = 'none';
+        if (bannerSignupBtn) bannerSignupBtn.style.display = 'none';
+        if (bannerLogoutBtn) bannerLogoutBtn.style.display = 'inline-flex';
+        if (copyTokenBtn) copyTokenBtn.style.display = 'inline-flex';
+      } else {
+        authStatusText.innerHTML = `Not Signed In • Please <strong>Log In</strong> or <strong>Sign Up</strong>`;
+        statusDot.style.background = 'var(--text-light)';
+        if (headerLoggedOut) headerLoggedOut.style.display = 'flex';
+        if (headerLoggedIn) headerLoggedIn.style.display = 'none';
+        if (bannerLoginBtn) bannerLoginBtn.style.display = 'inline-flex';
+        if (bannerSignupBtn) bannerSignupBtn.style.display = 'inline-flex';
+        if (bannerLogoutBtn) bannerLogoutBtn.style.display = 'none';
+        if (copyTokenBtn) copyTokenBtn.style.display = 'none';
       }
     }
 
     function copyJwtToken() {
-      if (!currentToken) return alert('No active token.');
+      if (!currentToken) return alert('No active token. Please log in first.');
       navigator.clipboard.writeText(currentToken);
       alert('JWT Access Token copied to clipboard!');
     }
@@ -1410,6 +1806,10 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
     }
 
     async function submitTransaction() {
+      if (!currentToken) {
+        openLoginModal();
+        return;
+      }
       const amount = document.getElementById('txAmount').value;
       const type = document.getElementById('txType').value;
       const cat = document.getElementById('txCategory').value;
@@ -1440,6 +1840,10 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
     }
 
     async function submitBudget() {
+      if (!currentToken) {
+        openLoginModal();
+        return;
+      }
       const cat = document.getElementById('budgetCategory').value;
       const limit = document.getElementById('budgetLimit').value;
       const month = document.getElementById('budgetMonth').value;
@@ -1467,6 +1871,10 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
     }
 
     async function submitRecurring() {
+      if (!currentToken) {
+        openLoginModal();
+        return;
+      }
       const type = document.getElementById('recType').value;
       const cat = document.getElementById('recCategory').value;
       const amount = document.getElementById('recAmount').value;
@@ -1563,6 +1971,7 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
     }
 
     async function loadAllData() {
+      if (!currentToken) return;
       await loadCategories();
       await Promise.all([
         loadAnalytics(),
@@ -1582,7 +1991,7 @@ curl -X GET "http://127.0.0.1:8000/api/analytics/monthly-summary/?year=2026&mont
         updateAuthUI();
         await loadAllData();
       } else {
-        await generateNewTestUser();
+        updateAuthUI();
       }
     });
   </script>

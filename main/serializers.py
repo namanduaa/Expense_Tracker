@@ -4,27 +4,71 @@ from django.contrib.auth.password_validation import validate_password
 from .models import Category, Transaction, RecurringEntry, Budget
 
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    number = serializers.CharField(required=False, write_only=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.username_field in self.fields:
+            self.fields[self.username_field].required = False
+
+    def validate(self, attrs):
+        number = attrs.get('number')
+        if number and not attrs.get(self.username_field):
+            attrs[self.username_field] = str(number).strip()
+
+        if not attrs.get(self.username_field):
+            raise serializers.ValidationError({"number": "Phone number or username is required."})
+
+        data = super().validate(attrs)
+        data['user'] = {
+            'id': self.user.id,
+            'username': self.user.username,
+            'email': self.user.email,
+        }
+        return data
+
+
 class UserRegisterSerializer(serializers.ModelSerializer):
+    number = serializers.CharField(write_only=True, required=False)
+    username = serializers.CharField(required=False)
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password_confirm = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'password', 'password_confirm')
+        fields = ('id', 'username', 'number', 'email', 'first_name', 'last_name', 'password', 'password_confirm')
         extra_kwargs = {
-            'email': {'required': True},
+            'email': {'required': False},
         }
 
     def validate(self, attrs):
+        number = attrs.get('number')
+        if number and not attrs.get('username'):
+            attrs['username'] = str(number).strip()
+
+        if not attrs.get('username'):
+            raise serializers.ValidationError({"number": "Phone number or username is required."})
+
+        username = attrs['username']
+        if User.objects.filter(username__iexact=username).exists():
+            raise serializers.ValidationError({"number": "An account with this number/username already exists."})
+
         if attrs['password'] != attrs['password_confirm']:
             raise serializers.ValidationError({"password": "Passwords do not match."})
         return attrs
 
     def create(self, validated_data):
-        validated_data.pop('password_confirm')
+        validated_data.pop('password_confirm', None)
+        validated_data.pop('number', None)
+        username = validated_data['username']
+        email = validated_data.get('email') or f"{username}@expensetracker.local"
         user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data.get('email', ''),
+            username=username,
+            email=email,
             first_name=validated_data.get('first_name', ''),
             last_name=validated_data.get('last_name', ''),
             password=validated_data['password']
@@ -32,6 +76,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         # Create default starter categories for new user
         Category.create_defaults_for_user(user)
         return user
+
 
 
 from drf_spectacular.utils import extend_schema_field

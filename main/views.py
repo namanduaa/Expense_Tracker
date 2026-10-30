@@ -16,8 +16,10 @@ from drf_spectacular.utils import (
     OpenApiResponse,
 )
 
+from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import Category, Transaction, RecurringEntry, Budget
 from .serializers import (
+    CustomTokenObtainPairSerializer,
     UserRegisterSerializer,
     UserSerializer,
     CategorySerializer,
@@ -63,6 +65,15 @@ class RegisterView(generics.CreateAPIView):
                 'access': str(refresh.access_token),
             }
         }, status=status.HTTP_201_CREATED)
+
+
+@extend_schema(
+    tags=['Authentication'],
+    summary='Obtain JWT token pair using number or username and password',
+    description='Authenticates a user with their registered phone number or username and password, returning JWT access and refresh tokens.'
+)
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 
 @extend_schema(
