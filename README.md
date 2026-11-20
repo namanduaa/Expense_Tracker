@@ -1,8 +1,7 @@
 # Minimal Django scaffold
 
-This project is a simple Django app with a landing page and a GitHub-ready setup.
-
-This repository has been updated with one more change for practice and version tracking.
+The app-specific landing page and routes have been cleared. The Django project
+settings and bootstrap files remain as a starting point for a new design.
 
 ## Quick start
 
@@ -26,7 +25,8 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Open http://127.0.0.1:8000/ to view the app.
+Start the server with `python manage.py runserver`. The root URL has no page
+until you add a route and view.
 
 ## GitHub upload
 
